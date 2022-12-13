@@ -1,22 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Bex : MonoBehaviour
 {
-    [SerializeField] private Rigidbody2D bexRigidbody;
-    [SerializeField] private float flapStrength = 8.5f;
+    private Rigidbody2D bexRigidbody;
+    [SerializeField] private Transform bexPos;
+    [SerializeField] private float flapStrength;
+    [SerializeField] private LogicScript logic;
+    private bool bexIsAlive = true;
 
     void Start()
     {
         bexRigidbody = GetComponent<Rigidbody2D>();
+        bexPos = GetComponent<Transform>();
+        flapStrength = 7.2f;
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && bexIsAlive)
         {
-            bexRigidbody.velocity = Vector2.up * 8.5f;
+            bexRigidbody.velocity = Vector2.up * flapStrength;
         }
+        if (bexPos.position.y < -25)
+        {
+            logic.gameOver();
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        logic.gameOver();
+        bexIsAlive = false;
     }
 }
